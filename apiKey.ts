@@ -1,9 +1,5 @@
-// IMPORTANT: Do not commit this file to any version control system (like Git).
-// This file is for local development only.
-// For deployment on platforms like Vercel, use environment variables.
-
-// 1. Replace 'YOUR_API_KEY_HERE' with your actual Google Gemini API key.
-// 2. Save the file.
-// 3. Make sure this file is listed in your .gitignore file to prevent it from being uploaded.
-
-export const API_KEY = 'AIzaSyAWjOLENxjTV2IAN4fvliPKOEeVIQEKnzI';
+// This file has been intentionally left empty.
+// Storing API keys directly in source code is a major security risk.
+// This application is configured to use the `process.env.API_KEY` environment variable.
+// Please set up your environment variable to provide the API key securely.
+// Do not add your API key to this file.
