@@ -8,7 +8,11 @@ const aspectRatios: { label: string; value: AspectRatio }[] = [
   { label: 'Portrait', value: '9:16' },
 ];
 
-const ImageGenerator: React.FC = () => {
+interface ImageGeneratorProps {
+  apiKey: string;
+}
+
+const ImageGenerator: React.FC<ImageGeneratorProps> = ({ apiKey }) => {
   const [prompt, setPrompt] = useState<string>('');
   const [aspectRatio, setAspectRatio] = useState<AspectRatio>('1:1');
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -27,7 +31,7 @@ const ImageGenerator: React.FC = () => {
     try {
       // Dynamically import the service only when needed.
       const { generateImage } = await import('../services/geminiService');
-      const imageBytes = await generateImage(prompt, aspectRatio);
+      const imageBytes = await generateImage(prompt, aspectRatio, apiKey);
       const imageUrl = `data:image/png;base64,${imageBytes}`;
       setGeneratedImageUrl(imageUrl);
     } catch (err) {
@@ -39,7 +43,7 @@ const ImageGenerator: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [prompt, aspectRatio]);
+  }, [prompt, aspectRatio, apiKey]);
   
   const handleDownloadClick = () => {
     if (!generatedImageUrl) return;
