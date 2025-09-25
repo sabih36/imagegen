@@ -6,4 +6,4 @@
 // 2. Save the file.
 // 3. Make sure this file is listed in your .gitignore file to prevent it from being uploaded.
 
-export const API_KEY = 'AIzaSyAWjOLENxjTV2IAN4fvliPKOEeVIQEKnzI';
+export const API_KEY = 'YOUR_API_KEY_HERE';

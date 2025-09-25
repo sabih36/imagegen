@@ -40,6 +40,9 @@ export const generateImage = async (prompt: string, aspectRatio: AspectRatio): P
         if (error.message.includes('API key not valid')) {
             throw new Error('Authentication Error: The provided API key is not valid. Please check your key in apiKey.ts.');
         }
+        if (error.message.includes('billed users')) {
+            throw new Error('Account Issue: This feature requires a billing-enabled Google Cloud project. Please enable billing in your Google Cloud Console and try again.');
+        }
         throw new Error(`Failed to generate image: ${error.message}`);
     }
     throw new Error("An unknown error occurred while generating the image.");
