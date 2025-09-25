@@ -1,36 +1,20 @@
 import { GoogleGenAI } from "@google/genai";
 
-// Use a variable to hold the client instance, initialized lazily.
-let ai: GoogleGenAI | null = null;
+// This check is the new safeguard. If the API key is missing, this module
+// will throw an error when it's dynamically imported. This prevents the
+// app from crashing and allows the UI to display the error message gracefully.
+if (!process.env.API_KEY) {
+  throw new Error('Configuration Error: The API key is missing. Please ensure it is set up correctly in your environment configuration.');
+}
 
-// This function safely initializes and returns the AI client.
-// It is designed to be called only when needed, preventing startup crashes.
-const getAiClient = (): GoogleGenAI => {
-  if (!ai) {
-    // Safely check for the API key from the environment.
-    // This guard prevents a "process is not defined" ReferenceError in browser environments.
-    const apiKey = typeof process !== 'undefined' && process.env ? process.env.API_KEY : undefined;
-
-    if (!apiKey) {
-      // If the key is missing, throw a configuration error that will be caught and displayed in the UI.
-      throw new Error('Configuration Error: The API key is missing. Please ensure it is set up correctly in your environment configuration.');
-    }
-    
-    // Initialize the client only when the key is confirmed to be present.
-    ai = new GoogleGenAI({ apiKey });
-  }
-  return ai;
-};
-
+// Initialize the client directly. The check above ensures the key exists.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export type AspectRatio = "1:1" | "16:9" | "9:16" | "4:3" | "3:4";
 
 export const generateImage = async (prompt: string, aspectRatio: AspectRatio): Promise<string> => {
   try {
-    // Get the initialized client right before making the API call.
-    const client = getAiClient();
-
-    const response = await client.models.generateImages({
+    const response = await ai.models.generateImages({
         model: 'imagen-4.0-generate-001',
         prompt: prompt,
         config: {
@@ -57,7 +41,7 @@ export const generateImage = async (prompt: string, aspectRatio: AspectRatio): P
         if (error.message.includes('billing')) {
              throw new Error('Account Issue: This feature requires a billing-enabled Google Cloud project. Please enable billing and try again.');
         }
-        // Let the specific config error from getAiClient pass through.
+        // Let the initial config error pass through from the top-level check.
         if (error.message.startsWith('Configuration Error')) {
             throw error;
         }
