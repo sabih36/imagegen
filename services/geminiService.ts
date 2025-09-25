@@ -1,18 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
+import { API_KEY } from '../apiKey';
 
-if (!process.env.API_KEY) {
-  // This is a safeguard to warn developers if the environment is not set up.
-  console.warn("API_KEY environment variable not set. Image generation will fail.");
+if (!API_KEY || API_KEY === 'YOUR_API_KEY_HERE') {
+  // This is a safeguard to warn developers if the key is not set.
+  console.warn("API_KEY not set in apiKey.ts. Image generation will fail.");
 }
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+const ai = new GoogleGenAI({ apiKey: API_KEY });
 
 export type AspectRatio = "1:1" | "16:9" | "9:16" | "4:3" | "3:4";
 
 export const generateImage = async (prompt: string, aspectRatio: AspectRatio): Promise<string> => {
-  // Provide a clear, user-facing error if the API key is missing during an actual generation attempt.
-  if (!process.env.API_KEY) {
-    throw new Error("Configuration Error: The API key is not configured. Please contact the site administrator.");
+  // Provide a clear, user-facing error if the API key is missing.
+  if (!API_KEY || API_KEY === 'YOUR_API_KEY_HERE') {
+    throw new Error("Configuration Error: Please add your API key to the apiKey.ts file.");
   }
   
   try {
@@ -35,6 +36,10 @@ export const generateImage = async (prompt: string, aspectRatio: AspectRatio): P
   } catch (error) {
     console.error("Error generating image:", error);
     if (error instanceof Error) {
+        // Provide a more user-friendly message for common API errors
+        if (error.message.includes('API key not valid')) {
+            throw new Error('Authentication Error: The provided API key is not valid. Please check your key in apiKey.ts.');
+        }
         throw new Error(`Failed to generate image: ${error.message}`);
     }
     throw new Error("An unknown error occurred while generating the image.");
