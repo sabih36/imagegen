@@ -1,5 +1,5 @@
 import React, { useState, useCallback } from 'react';
-import { generateImage, AspectRatio } from '../services/geminiService';
+import type { AspectRatio } from '../services/geminiService';
 import Spinner from './Spinner';
 
 const aspectRatios: { label: string; value: AspectRatio }[] = [
@@ -25,6 +25,8 @@ const ImageGenerator: React.FC = () => {
     setGeneratedImageUrl(null);
 
     try {
+      // Dynamically import the service only when needed.
+      const { generateImage } = await import('../services/geminiService');
       const imageBytes = await generateImage(prompt, aspectRatio);
       const imageUrl = `data:image/png;base64,${imageBytes}`;
       setGeneratedImageUrl(imageUrl);
