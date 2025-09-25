@@ -1,0 +1,5 @@
+{
+  "name": "AI Image Weaver",
+  "description": "A web application that uses the Gemini API to generate stunning images from text prompts. Users can specify prompts and aspect ratios to create unique visual content.",
+  "requestFramePermissions": []
+}
